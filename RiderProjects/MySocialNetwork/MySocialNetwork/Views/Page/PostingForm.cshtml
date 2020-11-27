@@ -1,0 +1,15 @@
+﻿@model MySocialNetwork.DTO.InputPostDto
+<div>
+    @using (Ajax.BeginForm("Post",new {wallId = Model.WallId},new AjaxOptions(){UpdateTargetId = "wall"}))
+    {
+        <div>
+            <p>
+                @Html.Label("Input your message: ")
+                @Html.TextAreaFor(model => model.Text)
+            </p>
+        </div>
+        <div>
+            <input type="submit" value="Post"/>
+        </div>
+    }
+</div>
