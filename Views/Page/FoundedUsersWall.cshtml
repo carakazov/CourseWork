@@ -1,0 +1,17 @@
+﻿@model IEnumerable<MySocialNetwork.DTO.AuthorDto>
+@using MySocialNetwork.DTO;
+
+<h3>Founded users</h3>
+@Model.Count()
+@foreach (AuthorDto item in Model)
+{
+    <div>
+        <p>
+            @{ string fullName = item.FirstName + " " + item.SecondName + " " + item.MiddleName;}
+            @Html.ActionLink(fullName, "PrivatePage", new { login = item.Login })
+        </p>
+        <p>
+            Age is: @item.Age
+        </p>
+    </div>
+}
