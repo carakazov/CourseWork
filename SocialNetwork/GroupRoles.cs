@@ -2,6 +2,8 @@
 {
     public enum GroupRoles
     {
-        Reader
+        Reader,
+        Admin,
+        Redactor
     }
 }

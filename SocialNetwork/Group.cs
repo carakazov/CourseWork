@@ -9,7 +9,7 @@ namespace MySocialNetwork.DAO
         public int Id { get; set; }
         public string Title { get; set; }
         [Column("group_type_id")]
-        public int GroupTypeId { get; set; }
+        public int GroupTypeId { get; set; } 
         public int Rating { get; set; }
         
         public GroupType GroupType { get; set; }
