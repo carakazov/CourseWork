@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
-using MySocialNetwork.DAO;
+ using System.Net;
+ using MySocialNetwork.DAO;
 using MySocialNetwork.DTO;
 using MySocialNetwork.Utils;
 
@@ -14,6 +15,7 @@ namespace MySocialNetwork.Services
         private Cryptographer cryptographer = new Cryptographer();
         private UserManager userManager = new UserManager();
         private PageManager pageManager = new PageManager();
+        private FriendshipMapper friendshipMapper = new FriendshipMapper();
 
         public void RegistrateNewUser(RegistrationDto registrationDto)
         {
@@ -28,18 +30,25 @@ namespace MySocialNetwork.Services
             UserDto userDto = mapper.FromUserToUserDto(user);
             return userDto;
         }
-
+        
+        
         public void UpdateScoredPostList(UserDto userDto)
         {
             User user = userManager.GetUserByLogin(userDto.Login);
             userDto.ScoredPosts = mapper.FindScoredPosts(user);
         }
 
-        public List<AuthorDto> FindUsers(FindUsersDto userInfo)
+        public List<UserInfoDto> FindUsers(FindUsersDto userInfo)
         {
             List<User> users = userManager.FindUsers(userInfo);
-            List<AuthorDto> usersDtos = mapper.FromUsersToAuthorsDtos(users);
+            List<UserInfoDto> usersDtos = mapper.FromUsersToAuthorsDtos(users);
             return usersDtos;
+        }
+
+        public List<UserInfoDto> GetReceivedRequests(UserDto user)
+        {
+            List<UserInfoDto> senders = friendshipMapper.GetSendersOfRequests(user);
+            return senders; 
         }
     }
 }

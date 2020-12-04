@@ -10,7 +10,7 @@ namespace MySocialNetwork.DAO
         [Column("type_owner_id")]
         public int TypeOwnerId { get; set; }
         public string Title { get; set; }
-        public User Owner { get; set; }
+        public User TypeOwner { get; set; }
         public ICollection<Friendship> Friendships { get; set; }
 
         public FriendshipType()

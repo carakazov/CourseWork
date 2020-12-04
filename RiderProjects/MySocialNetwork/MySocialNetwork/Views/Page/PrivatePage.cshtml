@@ -44,6 +44,15 @@
         @Model.RegistrationDate
     </p>
 </div>
+
+@if (Model.Id == currentUser.Id)
+{
+    <div id="receivedRequests">
+        @{Html.RenderAction("ShowReceivedRequests");}
+    </div>    
+}
+
+
 <div id="wall">
         @{ Html.RenderAction("Wall", new { wallId = currentWallId });
         }

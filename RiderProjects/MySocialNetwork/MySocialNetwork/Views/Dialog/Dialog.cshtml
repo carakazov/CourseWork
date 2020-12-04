@@ -1,0 +1,28 @@
+﻿@using MySocialNetwork.DTO
+@model MySocialNetwork.DTO.UserInfoDto
+@{
+    string linkText = Model.FirstName + " " + Model.SecondName;
+    UserDto currentUser = (UserDto) Session["session"];
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Dialog</title>
+</head>
+<body>
+<div>
+    <label>
+        @Html.ActionLink(linkText, "PrivatePage", "Page", new {login = Model.Login}, null)
+    </label>
+</div>
+<div>
+    <label>Messages</label>
+    <div id="messagesZone">
+        @{
+            Html.RenderAction("ShowMessages", new {firstUserId = Model.Id, secondUserId = currentUser.Id});
+        }
+    </div>
+</div>
+</body>
+</html>

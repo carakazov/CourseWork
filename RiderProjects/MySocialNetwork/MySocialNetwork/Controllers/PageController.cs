@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using Microsoft.CSharp.RuntimeBinder;
 using MySocialNetwork.DAO;
@@ -13,6 +14,7 @@ namespace MySocialNetwork.Controllers
         private PostService postService = new PostService();
         private UserService userService = new UserService();
         private PageService pageService = new PageService();
+        private FriendshipService friendshipService = new FriendshipService();
 
         public ActionResult PrivatePage(string login)
         {
@@ -60,21 +62,50 @@ namespace MySocialNetwork.Controllers
             return View();
         }
 
-     
-        public ActionResult StartFindUsers(FindUsersDto userInfo)
-        {
-            List<AuthorDto> users = userService.FindUsers(userInfo);
-            return RedirectToAction("ShowFoundedUsers", "Page", new { foundedUsers = users });
-        }
         
-        public ActionResult AllDone(FindUsersDto test)
+        [HttpPost]
+        public ActionResult SendRequest(string firstName, string secondName, string middleName, int minAge, int maxAge, int senderId, int receiverId, DateTime sendingDate)
         {
-            return View(test);
+            friendshipService.SendRequest(senderId, receiverId, sendingDate);
+            UserDto currentUser = (UserDto) Session["session"];
+            Session["session"] = userService.LogIn(currentUser.Login);
+            return RedirectToAction("StartFindUsersFromPartial", new {firstName = firstName, secondName = secondName, middleName = middleName, minAge = minAge, maxAge = maxAge});
         }
-        
-        public ActionResult ShowFoundedUsers(IEnumerable<AuthorDto> foundedUsers)
+
+        public ActionResult StartFindUsersFromPartial(string firstName, string secondName, string middleName, int minAge,
+            int maxAge)
         {
+            FindUsersDto userInfo = new FindUsersDto()
+            {
+                FirstName = firstName,
+                SecondName = secondName,
+                MiddleName = middleName,
+                MinAge = minAge,
+                MaxAge = maxAge
+            };
+            List<UserInfoDto> users = userService.FindUsers(userInfo);
+            FoundedUsersDto foundedUsers = new FoundedUsersDto(userInfo, users);
             return PartialView("FoundedUsersWall", foundedUsers);
         }
+        
+        public ActionResult StartFindUsers(FindUsersDto userInfo)
+        {
+            if (ModelState.IsValid)
+            {
+                List<UserInfoDto> users = userService.FindUsers(userInfo);
+                FoundedUsersDto foundedUsers = new FoundedUsersDto(userInfo, users);
+                return PartialView("FoundedUsersWall", foundedUsers);   
+            }
+
+            return RedirectToAction("FindUsers");
+        }
+        
+        public ActionResult ShowReceivedRequests()
+        {
+            UserDto currentUser = (UserDto) Session["session"];
+            List<UserInfoDto> senders = userService.GetReceivedRequests(currentUser);
+            return PartialView("ReceivedRequests", senders);
+        }
+        
     }
 }

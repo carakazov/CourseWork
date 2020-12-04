@@ -28,5 +28,18 @@ namespace MySocialNetwork.DAO
                 throw;
             }
         }
+
+        public Wall CreateWall(WallTypes type, string title)
+        {
+            WallType wallType = dbContext.WallTypes.Where(wt => wt.Title == type.ToString()).First();
+            Wall wall = new Wall()
+            {
+                Title = title,
+                WallType = wallType
+            };
+            wall = dbContext.Walls.Add(wall);
+            dbContext.SaveChanges();
+            return wall;
+        }
     }
 }

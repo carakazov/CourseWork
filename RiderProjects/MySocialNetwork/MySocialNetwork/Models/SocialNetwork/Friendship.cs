@@ -13,7 +13,7 @@ namespace MySocialNetwork.DAO
         [Column("friend_id", Order = 2)]
         public int FriendId { get; set; }
         [Column("type_id")]
-        public int TypeId { get; set; }
+        public int? TypeId { get; set; }
         
         public User User { get; set; }
         public User Friend { get; set; }

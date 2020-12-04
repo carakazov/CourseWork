@@ -12,7 +12,7 @@
     {
         <div>
             <p>
-                @Html.ActionLink(post.Author.FirstName + " " + post.Author.SecondName, "PrivatePage", new {login = post.Author.Login})
+                @Html.ActionLink(post.UserInfo.FirstName + " " + post.UserInfo.SecondName, "PrivatePage", new {login = post.UserInfo.Login})
             </p>
             <p>
                 @post.Text

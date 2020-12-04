@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MySocialNetwork.DAO
@@ -6,7 +7,7 @@ namespace MySocialNetwork.DAO
     [Table("Dialogs")]
     public class Dialog
     {
-        [ForeignKey("Wall")]
+        [Key]
         public int Id { get; set; }
         [Column("first_user_id")]
         public int FirstUserId { get; set; }

@@ -11,7 +11,7 @@ using MySocialNetwork.DTO;
     public class UserManager
     {
         private SocialNetworkDbContext dbContext = new SocialNetworkDbContext();
-
+        private FriendshipManager friendshipManager = new FriendshipManager();
         public User GetUserByLogin(string login)
         {
             try
@@ -22,6 +22,12 @@ using MySocialNetwork.DTO;
                     WallType wallType = dbContext.WallTypes.Where(wt => wt.Id == wall.WallTypeId).First();
                     wall.WallType = wallType;
                 }
+
+                List<Friendship> friendships = dbContext.Friendships.Where(f => f.UserId == user.Id)
+                    .Include(f => f.Friend).Include(f => f.Type).ToList();
+                user.Friendships = friendships;
+                user.SentRequests = friendshipManager.GetSentRequestsOfUser(user.Id);
+                user.ReceivedRequests = friendshipManager.GetReceivedRequestsOfUser(user.Id);
                 return user;
             }
             catch
@@ -52,7 +58,7 @@ using MySocialNetwork.DTO;
                     {
                         OwnerId =  addedUser.Id,
                         WallTypeId = photoWallTypeId,
-                        Title = WallTypes.Photos.ToString()
+                        Title = "Avatars"
                     };
                     dbContext.Walls.Add(mainWall);
                     dbContext.Walls.Add(avatarsWall);
@@ -70,33 +76,58 @@ using MySocialNetwork.DTO;
 
         public List<User> FindUsers(FindUsersDto userInfo)
         {
-            List<User> foundedUsers = dbContext.Users.ToList();
-           if (userInfo.FirstName != null)
+            try
             {
-                foundedUsers = foundedUsers.Where(u => u.FirstName == "Ivan").ToList();
-            }
+                List<User> foundedUsers = dbContext.Users.ToList();
+                if (userInfo.FirstName != null)
+                {
+                    foundedUsers = foundedUsers.Where(u => u.FirstName == userInfo.FirstName).ToList();
+                }
 
-            if (userInfo.SecondName != null)
-            {
-                foundedUsers = foundedUsers.Where(u => u.SecondName == userInfo.SecondName).ToList();
-            }
+                if (userInfo.SecondName != null)
+                {
+                    foundedUsers = foundedUsers.Where(u => u.SecondName == userInfo.SecondName).ToList();
+                }
 
-            if (userInfo.MiddleName != null)
-            {
-                foundedUsers = foundedUsers.Where(u => u.MiddleName == userInfo.MiddleName).ToList();
+                if (userInfo.MiddleName != null)
+                {
+                    foundedUsers = foundedUsers.Where(u => u.MiddleName == userInfo.MiddleName).ToList();
+                }
+
+                if (userInfo.MinAge == null)
+                {
+                    userInfo.MinAge = 0;
+                }
+
+                if (userInfo.MaxAge == null)
+                {
+                    userInfo.MaxAge = 120;
+                }
+
+                DateTime now = DateTime.Now;
+                foundedUsers = foundedUsers.Where(u => FindCorrectAge(userInfo.MinAge, userInfo.MaxAge, u.BirthDate))
+                    .ToList();
+                return foundedUsers;
             }
-            /*
-            DateTime now = DateTime.Now;
-            foundedUsers = foundedUsers.Where(u =>
-                CalculateAge(u.BirthDate, now) <= userInfo.MaxAge && CalculateAge(u.BirthDate, now) >= userInfo.MinAge);*/
-            return foundedUsers;
+            catch
+            {
+                throw;
+            }
         }
-
-        private int CalculateAge(DateTime birthday, DateTime now)
+        
+        private bool FindCorrectAge(int minAge, int maxAge, DateTime birthday)
         {
-            TimeSpan ageTimeSpan = now - birthday;
-            int age = ageTimeSpan.Days / 365;
-            return age;
+            DateTime now = DateTime.Now;
+            TimeSpan timeSpan = now - birthday;
+            int age = timeSpan.Days / 365;
+            if (age <= maxAge && age >= minAge)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

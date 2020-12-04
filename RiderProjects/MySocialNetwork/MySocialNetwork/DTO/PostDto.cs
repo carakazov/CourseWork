@@ -7,7 +7,7 @@ namespace MySocialNetwork.DTO
     {
         public int Id { get; set; }
         public DateTime PostingDate { get; set; }
-        public AuthorDto Author { get; set; }
+        public UserInfoDto UserInfo { get; set; }
         public int Rating { get; set; }
         public string Text { get; set; }
         

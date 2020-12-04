@@ -1,6 +1,6 @@
 ﻿namespace MySocialNetwork.DTO
 {
-    public class AuthorDto
+    public class UserInfoDto
     {
         public int Id { get; set; }
         public string Login { get; set; }

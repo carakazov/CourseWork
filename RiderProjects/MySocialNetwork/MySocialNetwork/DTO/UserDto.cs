@@ -18,11 +18,19 @@ namespace MySocialNetwork.DTO
         
         public List<WallDto> Walls { get; set; }
         public List<ScoredPostDto> ScoredPosts { get; set; }
-
+        
+        public List<FriendshipRequestDto> SentFriendshipRequests { get; set; }
+        public List<FriendshipRequestDto> ReceivedFriendshipRequests { get; set; }
+        
+        public List<FriendDto> Friends { get; set; }
+        
         public UserDto()
         {
             Walls = new List<WallDto>();
             ScoredPosts = new List<ScoredPostDto>();
+            SentFriendshipRequests = new List<FriendshipRequestDto>();
+            ReceivedFriendshipRequests = new List<FriendshipRequestDto>();
+            Friends = new List<FriendDto>();
         }
     }
 }

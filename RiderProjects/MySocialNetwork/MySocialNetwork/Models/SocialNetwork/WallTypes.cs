@@ -3,6 +3,7 @@
     public enum WallTypes
     {
         Main, 
-        Photos
+        Photos,
+        Dialog
     }
 }

@@ -62,10 +62,53 @@ namespace MySocialNetwork.Utils
                 userDto.Walls.Add(wallDto);
             }
 
+            userDto.Friends = GetFriendsInDto(user.Friendships);
+            userDto.SentFriendshipRequests = GetFriendshipsRequestsDto(user.SentRequests.ToList());
+            userDto.ReceivedFriendshipRequests = GetFriendshipsRequestsDto(user.ReceivedRequests.ToList());
             userDto.ScoredPosts = FindScoredPosts(user);
             return userDto;
         }
 
+        public List<FriendDto> GetFriendsInDto(ICollection<Friendship> friendships)
+        {
+            List<FriendDto> friends = new List<FriendDto>();
+            foreach (Friendship friendship in friendships)
+            {
+                FriendDto friend = new FriendDto();
+                UserInfoDto userInfo = FromUserAuthorDto(friendship.Friend);
+                friend.UserInfo = userInfo;
+                if (friendship.TypeId == null)
+                {
+                    friend.FriendshipType = "common";
+                }
+                else
+                {
+                    friend.FriendshipType = friendship.Type.Title;
+                }
+                friends.Add(friend);
+            }
+
+            return friends;
+        }
+        
+        private List<FriendshipRequestDto> GetFriendshipsRequestsDto(List<FriendshipRequest> requests)
+        {
+            List<FriendshipRequestDto> friendshipRequests = new List<FriendshipRequestDto>();
+            foreach (FriendshipRequest request in requests)
+            {
+                FriendshipRequestDto requestDto = GetFriendshipRequestDto(request);
+                friendshipRequests.Add(requestDto);
+            }
+
+            return friendshipRequests;
+        }
+
+        private FriendshipRequestDto GetFriendshipRequestDto(FriendshipRequest request)
+        {
+            FriendshipRequestDto requestDto = new FriendshipRequestDto(request.SenderId, request.ReceiverId, request.SendingDate);
+            return requestDto;
+        }
+        
         public List<ScoredPostDto> FindScoredPosts(User user)
         {
             List<ScoredPostDto> scoredPosts = new List<ScoredPostDto>();
@@ -78,9 +121,9 @@ namespace MySocialNetwork.Utils
             return scoredPosts;
         }
         
-        public AuthorDto FromUserAuthorDto(User user)
+        public UserInfoDto FromUserAuthorDto(User user)
         {
-            AuthorDto authorDto = new AuthorDto()
+            UserInfoDto userInfoDto = new UserInfoDto()
             {
                 Id = user.Id,
                 Login = user.Login,
@@ -90,8 +133,8 @@ namespace MySocialNetwork.Utils
             };
             TimeSpan ageTimeSpan = DateTime.Now - user.BirthDate;
             int age = ageTimeSpan.Days / 365;
-            authorDto.Age = age;
-            return authorDto;
+            userInfoDto.Age = age;
+            return userInfoDto;
         }
         
         public PostDto FromPostToPostDto(Post post)
@@ -101,7 +144,7 @@ namespace MySocialNetwork.Utils
                 Id = post.Id,
                 Rating = post.Rating,
                 PostingDate = post.PostingDate,
-                Author = FromUserAuthorDto(post.Author),
+                UserInfo = FromUserAuthorDto(post.Author),
                 WallId = post.WallId,
                 Text =  post.Text
             };
@@ -127,7 +170,7 @@ namespace MySocialNetwork.Utils
         {
             Post post = new Post()
             {
-                AuthorId = postDto.Author.Id,
+                AuthorId = postDto.UserInfo.Id,
                 WallId = postDto.WallId,
                 PostingDate = postDto.PostingDate,
                 Text = postDto.Text
@@ -186,13 +229,13 @@ namespace MySocialNetwork.Utils
             return scoredPostDto;
         }
 
-        public List<AuthorDto> FromUsersToAuthorsDtos(IEnumerable<User> users)
+        public List<UserInfoDto> FromUsersToAuthorsDtos(IEnumerable<User> users)
         {
-            List<AuthorDto> authorDtos = new List<AuthorDto>();
+            List<UserInfoDto> authorDtos = new List<UserInfoDto>();
             foreach (User user in users)
             {
-                AuthorDto authorDto = FromUserAuthorDto(user);
-                authorDtos.Add(authorDto);
+                UserInfoDto userInfoDto = FromUserAuthorDto(user);
+                authorDtos.Add(userInfoDto);
             }
 
             return authorDtos;
