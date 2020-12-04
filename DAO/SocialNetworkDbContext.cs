@@ -7,7 +7,7 @@ namespace MySocialNetwork.DAO
 {
     public class SocialNetworkDbContext : DbContext
     {
-        public SocialNetworkDbContext():base(@"Data Source=localhost\SQLEXPRESS;Initial Catalog=social_network;User Id=vadim;Password=yfgjktjy1813")
+        public SocialNetworkDbContext():base(@"Data Source=localhost\SQLEXPRESS;Initial Catalog=social_network;User Id=dmitry;Password=123123")
         {}
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
