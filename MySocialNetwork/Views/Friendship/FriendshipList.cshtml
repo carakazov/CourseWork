@@ -2,6 +2,7 @@
 @model IEnumerable<MySocialNetwork.DTO.FriendshipDto>
 @{
     SelectList list = (SelectList) ViewData["list"];
+    UserDto userDto = (UserDto) Session["session"];
 }
 <!DOCTYPE html>
 <html>
@@ -23,10 +24,13 @@
                         @Html.ActionLink(linkText, "PrivatePage", "Page", new {login = friend.Login}, null)
                         @using (Html.BeginForm("ChangeFriendship", "Friendship", new {friendId = friend.Id}))
                         {
-                           @Html.DropDownList("newTypeId", list)
-                           <input type="submit" value="Change type"/>
+                            @Html.DropDownList("newTypeId", list)
+                            <input type="submit" value="Change type"/>
                         }
-                        </li>
+                    </li>
+                    <p>
+                        @Html.ActionLink("Dialog", "OpenDialog", "Dialog", new {login = friend.Login, firstUserId = friend.Id, secondUserId = userDto.Id}, null)
+                    </p>
                 }
             </ul>
         }

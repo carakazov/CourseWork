@@ -35,14 +35,17 @@
                 {
                     <ul class="nav navbar-nav">
                         <li>
+                            @Html.ActionLink("My page", "PrivatePage", "Page", new {login = currentUser.Login}, null)
+                        </li>
+                        <li>
                             @Html.ActionLink("Find users", "FindUsers", "Page")
                         </li>
                         <li>
                             @Html.ActionLink("Friend list", "FriendList", "Friendship")
                         </li>
-                         <li>
-                             @Html.ActionLink("Friend list (test)", "FriendshipList", "Friendship")
-                             </li>
+                        <li>
+                            @Html.ActionLink("Friend list (test)", "FriendshipList", "Friendship")
+                        </li>
                         <li>
                             @Html.ActionLink("Create album", "CreateWall", "Wall")
                         </li>
@@ -64,7 +67,7 @@
                         <li>
                             @if (currentUser.RoleId == 2)
                             {
-                                @Html.ActionLink("Show all users", "ShowAllUsers", "User")   
+                                @Html.ActionLink("Show all users", "ShowAllUsers", "User")
                             }
                         </li>
                     </ul>
